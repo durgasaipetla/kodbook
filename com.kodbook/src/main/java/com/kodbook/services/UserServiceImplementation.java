@@ -7,7 +7,7 @@ import com.kodbook.entities.User;
 import com.kodbook.repositories.UserRepository;
 
 @Service
-public class UserServiceImplementation implements UserService {
+public class UserServiceImplementation<UserProfileDTO> implements UserService {
 	
 	@Autowired
 	UserRepository repo;
@@ -36,5 +36,20 @@ public class UserServiceImplementation implements UserService {
 		}
 		return false;
 	}
+
+	@Override
+	public User getUser(String username) {
+		// TODO Auto-generated method stub
+		return repo.findByUsername(username);
+	}
+
+	@Override
+	public void updateUser(User user) {
+		// TODO Auto-generated method stub
+		 repo.save(user);
+	}
+
+
+	
 
 }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>My Profile</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/profile.css}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
+
+		nav {
+			background-color: #7695FF;
+			color: #fff;
+			padding: 15px;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+		}
+
+		nav a {
+			color: #fff;
+			text-decoration: none;
+			padding: 10px;
+			transition: background-color 0.3s;
+		}
+
+		nav a:hover {
+			background-color: #9DBDFF;
+			border-radius: 5px;
+		}
+
+		.row {
+			align-items: center;
+			height: 350px;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
+
+
+
+		.profile-picture img:hover {
+			border: 2px solid #7695FF;
+		}
+
+		.column1 {
+			align-items: center;
+			margin: 50px;
+			margin-left: 550px;
+			color: black;
+			height: 300px;
+			width: 600px;
+			padding: 10px;
+			display: flex;
+			text-align: center;
+			border: 2px solid white;
+			border-radius: 10px;
+			box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+		}
+
+
+		.profile-picture img {
+			width: 200px;
+			height: 200px;
+			border: 2px solid rgb(255, 255, 255);
+			border-radius: 50%;
+			object-fit: cover;
+		}
+
+		ul {
+			padding-bottom: 150px;
+		}
+
+	
+	</style>
+</head>
+
+<body>
+	<!-- Navigation bar -->
+	<nav>
+		<a href="/goHome"><i class="fas fa-home"></i> News feed</a>
+		<a href="/openCreatePost"><i class="fas fa-plus-circle"></i> Create post</a>
+		<a href="/openEditProfile"><i class="fas fa-edit"></i> Edit profile</a>
+		<a href="/logout"><i class="fas fa-edit"></i> Logout</a>
+	</nav>
+
+	<div class="row">
+
+		<div class="profile-picture column1">
+			<div class="profile">
+				<img th:if="${user.photoBase64}" th:src="'data:image/jpeg;base64,' + ${user.photoBase64}"
+					alt="Profile Photo" />
+				<div class="username">
+					<h3 th:text="${user.username}">Unknown</h3>
+				</div>
+			</div>
+
+			<ul>
+				<li><i class="fas fa-calendar-alt"></i> Date of Birth: <span th:text="${user.dob}"></span></li>
+				<li><i class="fas fa-venus-mars"></i>Gender: <span th:text="${user.gender}"></span></li>
+				<li><i class="fas fa-map-marker-alt"></i> City: <span th:text="${user.city}"></span></li>
+				<li><i class="fas fa-graduation-cap"></i> College: <span th:text="${user.college}"></span></li>
+				<li><i class="fas fa-info-circle"></i> Bio: <span th:text="${user.bio}"></span></li>
+			</ul>
+			<div class="social-links">
+				<p><i class="fab fa-linkedin"></i> <a th:href="${user.linkedIn}" target="_blank">LinkedIn</a></p>
+				<p><i class="fab fa-github"></i> <a th:href="${user.gitHub}" target="_blank">GitHub</a></p>
+			</div>
+
+		</div>
+	</div>
+
+	
+
+ <div class="posts-container">
+        <span th:each="post : ${myPosts}">
+            <div class="post-card">
+                <!-- Profile picture and Username -->
+                <div class="post-header">
+                    <div class="profile-pic">
+                        <img th:if="${post.user.photoBase64}" 
+                             th:src="'data:image/jpeg;base64,' + ${post.user.photoBase64}" 
+                             alt="User Photo" />
+                    </div>
+                    <span class="username" th:text="${post.user.username}">Unknown</span>
+                </div>
+
+                <!-- Post Image -->
+                <div class="post-image">
+                    <img th:if="${post.photoBase64}" 
+                         th:src="'data:image/jpeg;base64,' + ${post.photoBase64}" 
+                         alt="Post Photo" />
+                </div>
+
+                <!-- Caption -->
+                <p class="caption">
+                    <span th:text="${post.caption}"></span>
+                </p>
+
+               
+            </div>
+        </span>
+    </div>
+	
+</body>
+
+</html>

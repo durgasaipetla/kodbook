@@ -10,28 +10,104 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.kodbook.entities.Post;
+import com.kodbook.entities.User;
 import com.kodbook.services.PostService;
+import com.kodbook.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class NavigationController {
 	@Autowired
+	UserService service;
+	@Autowired
 	PostService postService;
-	@GetMapping("/")
+	@GetMapping("/login")
 	public String index() {
 		return "index";
 	}
 	@GetMapping("/openSignUp")
-	public String openSignUp() {
-		return "signUp";
+	public String openSignUp(HttpSession session) {
+		if(session.getAttribute("username")!=null) {
+			return "signUp";
+		}
+		else {
+			return "index";
+		}
 	}
 	@GetMapping("/openCreatePost")
 	public String openCreatePost() {
 		return "createPost";
 	}
 	@GetMapping("/goHome")
-	public String login(Model model)	{
+	public String login(Model model,HttpSession session)	{
 			List<Post> allPosts = postService.fetchAllPosts();
 			model.addAttribute("allPosts", allPosts);
-			return "home";
+			if(session.getAttribute("username")!=null) {
+				return "home";
+			}
+			else {
+				return "index";
+			}
 	}
+	@GetMapping("/openMyProfile")
+	public String openMyProfile(Model model, HttpSession session) {
+		String username = (String) session.getAttribute("username");
+		User user = service.getUser(username);
+		model.addAttribute("user",user);
+		List<Post> myPosts = user.getPosts();
+		model.addAttribute("myPosts", myPosts);
+		
+		if(session.getAttribute("username")!=null) {
+			return "myProfile";
+		}
+		else {
+			return "index";
+		}
+		
+	}
+	
+	@GetMapping("/openEditProfile")
+	public String openEditProfile(HttpSession session) {
+		if(session.getAttribute("username")!=null) {
+			return "updateProfile";
+		}
+		else {
+			return "index";
+		}
+		
+	}
+	
+	
+	@GetMapping("/updateProfile")
+	public String updateProfile(Model model, HttpSession session) {
+		String username = (String) session.getAttribute("username");
+		User user = service.getUser(username);
+		model.addAttribute("user",user);
+		if(session.getAttribute("username")!=null) {
+			return "myProfile";
+		}
+		else {
+			return "index";
+		}
+		
+	}
+	
+	@PostMapping("/visitProfile")
+	public String visitProfile(@RequestParam String profileName,Model model) {
+		User user = service.getUser(profileName);
+		model.addAttribute("user",user);
+		List<Post> myPosts = user.getPosts();
+		model.addAttribute("myPosts", myPosts);
+		
+		return "showUserProfile";
+	}
+	
+
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "index";
+	}
+
 }
